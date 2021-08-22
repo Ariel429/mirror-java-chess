@@ -1,4 +1,4 @@
-package domain;
+package domain.position;
 
 public enum File {
     A(1),
@@ -16,4 +16,8 @@ public enum File {
         this.value = value;
     }
 
+
+    public int getFileDifference(File targetFile) {
+        return Math.abs(targetFile.value - value);
+    }
 }

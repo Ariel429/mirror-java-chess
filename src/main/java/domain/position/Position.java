@@ -1,4 +1,4 @@
-package domain;
+package domain.position;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,5 +36,13 @@ public class Position {
     }
     private static String key(final File file, final Rank rank) {
         return file.toString() + rank.getRank();
+    }
+
+    public int getFileDifference(Position target) {
+        return file.getFileDifference(target.file);
+    }
+
+    public int getRankDifference(Position target) {
+        return rank.getRankDifference(target.rank);
     }
 }
