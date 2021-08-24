@@ -1,5 +1,7 @@
 package domain.position;
 
+import java.util.Arrays;
+
 public enum Rank {
     EIGHT(8),
     SEVEN(7),
@@ -22,5 +24,13 @@ public enum Rank {
 
     public int getRankDifference(Rank targetRank) {
         return targetRank.value - value;
+    }
+
+    public Rank add(int rank) {
+        int newRank = this.value + rank;
+        return Arrays.stream(values())
+                .filter(ranks -> ranks.value == newRank)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("움직일 수 없는 position입니다."));
     }
 }
