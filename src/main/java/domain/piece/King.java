@@ -3,6 +3,8 @@ package domain.piece;
 import domain.player.Player;
 import domain.position.Position;
 
+import java.util.Map;
+
 public class King extends Piece {
 
     private static final String BLACK_KING_UNICODE = "\u265A";
@@ -12,13 +14,19 @@ public class King extends Piece {
         super(position, player);
     }
 
+
     public static Piece of(Position position, Player player) {
         return new King(position, player);
     }
 
     @Override
-    public void move(Position target) {
+    protected Boolean checkMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+        return null;
+    }
 
+    @Override
+    protected PieceState makePieceState() {
+        return null;
     }
 
     @Override

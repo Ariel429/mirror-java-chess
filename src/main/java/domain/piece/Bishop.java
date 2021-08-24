@@ -3,6 +3,8 @@ package domain.piece;
 import domain.player.Player;
 import domain.position.Position;
 
+import java.util.Map;
+
 public class Bishop extends Piece{
 
     private static final String BLACK_BISHOP_UNICODE = "\u265D";
@@ -17,8 +19,13 @@ public class Bishop extends Piece{
     }
 
     @Override
-    public void move(Position target) {
+    protected Boolean checkMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+        return null;
+    }
 
+    @Override
+    protected PieceState makePieceState() {
+        return null;
     }
 
     @Override

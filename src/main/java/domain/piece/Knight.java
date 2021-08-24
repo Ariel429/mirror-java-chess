@@ -3,6 +3,8 @@ package domain.piece;
 import domain.player.Player;
 import domain.position.Position;
 
+import java.util.Map;
+
 public class Knight extends Piece{
 
     private static final String BLACK_KNIGHT_UNICODE = "\u265E";
@@ -17,18 +19,16 @@ public class Knight extends Piece{
     }
 
     @Override
-    public void move(Position target) {
-        if (!canMove(target)) {
-            throw new IllegalArgumentException("움직일 수 없는 position입니다");
-        }
-        this.position = target;
-    }
-
-    private boolean canMove(Position target) {
+    protected Boolean checkMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
         int fileDifference = position.getFileDifference(target);
         int rankDifference = position.getRankDifference(target);
 
         return fileDifference + rankDifference == 3 && fileDifference != 0 && rankDifference != 0;
+    }
+
+    @Override
+    protected PieceState makePieceState() {
+        return this;
     }
 
     @Override

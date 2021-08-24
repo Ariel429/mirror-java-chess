@@ -28,7 +28,7 @@ class RunningStateTest {
     @Test
     @DisplayName("RunningState는 move 시 board의 piece를 move하고 RunningState를 반환함")
     void move() {
-        assertThat(runningState.move(Position.of("A1"), Position.of("A2")))
+        assertThat(runningState.move(Position.of("b1"), Position.of("c3")))
                 .isInstanceOf(RunningState.class);
     }
 

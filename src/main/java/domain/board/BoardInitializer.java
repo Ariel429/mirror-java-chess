@@ -1,11 +1,12 @@
 package domain.board;
 
 import domain.piece.Piece;
+import domain.piece.PieceState;
 import domain.position.Position;
 
 import java.util.Map;
 
 public interface BoardInitializer {
 
-    Map<Position, Piece> create();
+    Map<Position, PieceState> create();
 }
