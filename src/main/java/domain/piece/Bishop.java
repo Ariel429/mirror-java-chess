@@ -16,7 +16,11 @@ public class Bishop extends Piece{
     private static final List<Direction> movingDirections;
 
     static {
-        movingDirections = Arrays.asList(Direction.NORTH_EAST, Direction.NORTH_WEST, Direction.SOUTH_EAST, Direction.SOUTH_WEST);
+        movingDirections = Arrays.asList(
+                Direction.NORTH_EAST,
+                Direction.NORTH_WEST,
+                Direction.SOUTH_EAST,
+                Direction.SOUTH_WEST);
     }
 
     private Bishop(Position position, Player player) {
