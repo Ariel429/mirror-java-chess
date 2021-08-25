@@ -3,6 +3,11 @@ package domain.state;
 import domain.MoveParameter;
 import domain.Turn;
 import domain.board.Board;
+import domain.piece.PieceState;
+import domain.player.Player;
+import domain.position.Position;
+
+import java.util.Map;
 
 public class EndState implements State {
 
@@ -30,5 +35,15 @@ public class EndState implements State {
     @Override
     public Board getBoard() {
         return board;
+    }
+
+    @Override
+    public boolean isEnd() {
+        return true;
+    }
+
+    @Override
+    public Map<Position, PieceState> getRemainPiece(Player player) {
+        return board.getRemainPieces(player);
     }
 }

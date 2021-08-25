@@ -5,6 +5,7 @@ import domain.MoveParameter;
 import domain.board.Board;
 import domain.controller.dto.RequestDto;
 import domain.controller.dto.ResponseDto;
+import domain.player.Player;
 import domain.position.Position;
 import domain.view.InputView;
 import domain.view.OutputView;
@@ -25,7 +26,7 @@ public class ChessController {
 
     public void run() {
         outputView.printInitialMessage();
-        while (true) {
+        while (!chessGame.isEnd()) {
             try {
                 RequestDto requestDto = inputView.inputRequest();
 
@@ -37,6 +38,10 @@ public class ChessController {
                         chessGame.end();
                     case MOVE:
                         chessGame.move(MoveParameter.of(requestDto.getParameter()));
+                    case STATUS:
+                        Map<Player, Double> status = chessGame.getStatus();
+                        outputView.printStatus(status);
+                        break;
                     case UNKNOWN:
                         throw new IllegalArgumentException();
                 }

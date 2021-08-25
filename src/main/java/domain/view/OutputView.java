@@ -1,6 +1,7 @@
 package domain.view;
 
 import domain.controller.dto.ResponseDto;
+import domain.player.Player;
 import domain.position.File;
 import domain.position.Position;
 import domain.position.Rank;
@@ -60,5 +61,12 @@ public class OutputView {
             sb.append(" " + file.toString() + " ");
         }
         return sb.toString();
+    }
+
+    public void printStatus(Map<Player, Double> status) {
+        status.entrySet()
+                .stream()
+                .map(entry -> entry.getKey().toString() + " : " + entry.getValue())
+                .forEach(System.out::println);
     }
 }

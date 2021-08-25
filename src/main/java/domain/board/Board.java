@@ -1,9 +1,11 @@
 package domain.board;
 
 import domain.Turn;
+import domain.piece.King;
 import domain.piece.Piece;
 import domain.piece.PieceDto;
 import domain.piece.PieceState;
+import domain.player.Player;
 import domain.position.Position;
 
 import java.util.Collections;
@@ -52,5 +54,22 @@ public class Board {
                         entry -> entry.getKey(),
                         entry -> new PieceDto(entry.getValue().getPlayer())
                 ));
+    }
+
+    public Map<Position, PieceState> getRemainPieces(Player player) {
+        return board.entrySet()
+                .stream()
+                .filter(entry -> player.equals(entry.getValue().getPlayer()))
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue()
+                ));
+    }
+
+    public boolean isLost(Player player) {
+        return board.values()
+                .stream()
+                .filter(piece -> piece instanceof King)
+                .count() == 0;
     }
 }

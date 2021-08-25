@@ -55,4 +55,8 @@ public class Position {
     public int getRankDifference(Position target) {
         return rank.getRankDifference(target.rank);
     }
+
+    public boolean isSameFile(File file) {
+        return this.file == file;
+    }
 }
