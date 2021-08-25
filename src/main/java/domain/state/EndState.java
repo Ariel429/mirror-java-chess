@@ -1,7 +1,8 @@
 package domain.state;
 
+import domain.MoveParameter;
+import domain.Turn;
 import domain.board.Board;
-import domain.position.Position;
 
 public class EndState implements State {
 
@@ -17,7 +18,7 @@ public class EndState implements State {
     }
 
     @Override
-    public State move(Position source, Position target) {
+    public State move(MoveParameter moveParameter, Turn turn) {
         throw new UnsupportedOperationException("게임이 종료되었습니다.");
     }
 

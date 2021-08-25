@@ -1,7 +1,9 @@
 package domain.board;
 
+import domain.Turn;
 import domain.piece.Knight;
 import domain.piece.PieceState;
+import domain.player.Player;
 import domain.position.Position;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ class BoardTest {
         Board board = Board.of(new EnumRepositoryBoardInitializer());
 
         //when
-        board.move(Position.of("b1"), Position.of("c3"));
+        board.move(Position.of("b1"), Position.of("c3"), Turn.from(Player.WHITE));
         Map<Position, PieceState> piecePosition = board.getBoard();
 
         //then

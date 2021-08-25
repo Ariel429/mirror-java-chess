@@ -1,6 +1,8 @@
 package domain.piece;
 
-import domain.Direction;
+import domain.MovingDirection;
+import domain.exception.MovingDirectionException;
+import domain.exception.ObstacleOnPathException;
 import domain.player.Player;
 import domain.position.Position;
 
@@ -9,18 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class Rook extends Piece {
+public class Rook extends UnchangeablePiece {
 
     private static final String BLACK_ROOK_UNICODE = "\u265C";
     private static final String WHITE_ROOK_UNICODE = "\u2656";
-    private static final List<Direction> movingDirections;
+    private static final List<MovingDirection> MOVING_DIRECTIONS;
 
     static {
-        movingDirections = Arrays.asList(
-                Direction.NORTH,
-                Direction.EAST,
-                Direction.SOUTH,
-                Direction.WEST);
+        MOVING_DIRECTIONS = Arrays.asList(
+                MovingDirection.NORTH,
+                MovingDirection.EAST,
+                MovingDirection.SOUTH,
+                MovingDirection.WEST);
     }
 
     private Rook(Position position, Player player) {
@@ -32,33 +34,24 @@ public class Rook extends Piece {
     }
 
     @Override
-    protected Boolean checkMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
-        Direction direction = Direction.getDirection(position, target);
+    protected void validateMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+        MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
-        if (!movingDirections.contains(direction)) {
-            return false;
+        if (!MOVING_DIRECTIONS.contains(movingDirection)) {
+            throw new MovingDirectionException();
         }
 
-        int fileDirection = direction.getFileDirection();
-        int rankDirection = direction.getRankDirection();
-
-        Position startPathPosition = position.getMovedPosition(fileDirection, rankDirection);
-        for (; !startPathPosition.equals(target); startPathPosition = startPathPosition.getMovedPosition(fileDirection, rankDirection)) {
+        Position startPathPosition = position.moveByDirection(movingDirection);
+        while (!startPathPosition.equals(target)) {
             if (!Objects.isNull(boardDto.get(startPathPosition))) {
-                return false;
+                throw new ObstacleOnPathException();
             }
-//            paths.add(startPathPosition);
+            startPathPosition = startPathPosition.moveByDirection(movingDirection);
         }
-        return true;
     }
 
     @Override
-    protected PieceState makePieceState() {
-        return this;
-    }
-
-    @Override
-    public String toString() {
+    public String getFigure() {
         if (player == Player.BLACK) {
             return BLACK_ROOK_UNICODE;
         }

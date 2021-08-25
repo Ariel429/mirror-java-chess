@@ -1,5 +1,6 @@
 package domain.board;
 
+import domain.Turn;
 import domain.piece.Piece;
 import domain.piece.PieceDto;
 import domain.piece.PieceState;
@@ -22,21 +23,25 @@ public class Board {
         return new Board(boardInitializer.create());
     }
 
-    public void move(Position source, Position target) {
+    public void move(Position source, Position target, Turn turn) {
         PieceState sourcePiece = board.get(source);
-        validateSource(sourcePiece);
+        validateSource(sourcePiece, turn);
         PieceState piece = sourcePiece.move(target, getBoardDto());
         board.remove(source);
         board.put(target, piece);
+        turn.switchTurn();
     }
 
     public Map<Position, PieceState> getBoard() {
         return Collections.unmodifiableMap(board);
     }
 
-    private void validateSource(PieceState sourcePiece) {
+    private void validateSource(PieceState sourcePiece, Turn turn) {
         if (Objects.isNull(sourcePiece)) {
             throw new IllegalArgumentException("잘못된 위치를 선택하셨습니다.");
+        }
+        if (!turn.isSamePlayer(sourcePiece.getPlayer())) {
+            throw new IllegalArgumentException("해당 플레이어의 턴이 아닙니다.");
         }
     }
 

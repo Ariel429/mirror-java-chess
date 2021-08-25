@@ -1,12 +1,15 @@
 package domain.piece;
 
+import domain.MovingDirection;
+import domain.exception.MovingDistanceException;
+import domain.exception.ObstacleOnPathException;
 import domain.player.Player;
 import domain.position.Position;
 
 import java.util.Map;
 import java.util.Objects;
 
-public class NotMovedPawn extends Piece {
+public class NotMovedPawn extends AttackablePawn {
 
     private static final String BLACK_PAWN_UNICODE = "\u265F";
     private static final String WHITE_PAWN_UNICODE = "\u2659";
@@ -19,47 +22,28 @@ public class NotMovedPawn extends Piece {
         return new NotMovedPawn(position, player);
     }
 
-    @Override
-    protected Boolean checkMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
-        int fileDifference = position.getFileDifference(target);
-        int rankDifference = position.getRankDifference(target);
-        PieceDto targetPiece = boardDto.get(target);
+    protected void validateMove(Position target, Map<Position, PieceDto> boardDto) {
+        MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
-        checkPawnDirection(rankDifference);
-
-        if (!Objects.isNull(targetPiece) && Math.abs(rankDifference) == 1) {
-            return true;
+        if (MOVING_DIRECTION_BY_PLAYER.get(player).equals(movingDirection)) {
+            if (position.getRankDifference(target) != movingDirection.getRankDirection() &&
+                    position.getRankDifference(target) != movingDirection.getRankDirection() * 2) {
+                throw new MovingDistanceException();
+            }
+            Position frontPosition = position.moveByDirection(movingDirection);
+            if (!Objects.isNull(boardDto.get(frontPosition))) {
+                throw new ObstacleOnPathException();
+            }
+            PieceDto piece = boardDto.get(target);
+            if (!Objects.isNull(piece)) {
+                throw new ObstacleOnPathException();
+            }
         }
-
-        if (Objects.isNull(targetPiece) && Math.abs(rankDifference) == 2) {
-            // 플레이어에 따라 Rank에 -1, +1 위치에 해당하는 말이 있는지 확인
-        }
-
-        if (fileDifference == 0 && rankDifference <= 2) {
-            return false;
-        }
-        return null;
-    }
-
-    private Boolean checkPawnDirection(int rankDifference) {
-        if (player == Player.WHITE) {
-            return rankDifference > 0;
-        }
-        return rankDifference < 0;
     }
 
     @Override
     protected PieceState makePieceState() {
-        return null;
+        return MovedPawn.of(position, player);
     }
-
-    @Override
-    public String toString() {
-        if (player == Player.BLACK) {
-            return BLACK_PAWN_UNICODE;
-        }
-        return WHITE_PAWN_UNICODE;
-    }
-
 }
 

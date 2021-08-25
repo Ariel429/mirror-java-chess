@@ -1,7 +1,8 @@
 package domain.state;
 
+import domain.MoveParameter;
+import domain.Turn;
 import domain.board.Board;
-import domain.position.Position;
 
 public class RunningState implements State {
 
@@ -17,8 +18,8 @@ public class RunningState implements State {
     }
 
     @Override
-    public State move(Position source, Position target) {
-        board.move(source, target);
+    public State move(MoveParameter moveParameter, Turn turn) {
+        board.move(moveParameter.getSource(), moveParameter.getTarget(), turn);
         return this;
     }
 

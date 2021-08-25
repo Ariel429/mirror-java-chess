@@ -1,13 +1,14 @@
 package domain.state;
 
+import domain.MoveParameter;
+import domain.Turn;
 import domain.board.Board;
-import domain.position.Position;
 
 public interface State {
 
     State start();
 
-    State move(Position source, Position target);
+    State move(MoveParameter moveParameter, Turn turn);
 
     State end();
 

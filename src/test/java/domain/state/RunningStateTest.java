@@ -1,11 +1,16 @@
 package domain.state;
 
+import domain.MoveParameter;
+import domain.Turn;
 import domain.board.Board;
 import domain.board.EnumRepositoryBoardInitializer;
+import domain.player.Player;
 import domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +33,7 @@ class RunningStateTest {
     @Test
     @DisplayName("RunningState는 move 시 board의 piece를 move하고 RunningState를 반환함")
     void move() {
-        assertThat(runningState.move(Position.of("b1"), Position.of("c3")))
+        assertThat(runningState.move(MoveParameter.of(Arrays.asList("b1", "a3")), Turn.from(Player.WHITE)))
                 .isInstanceOf(RunningState.class);
     }
 

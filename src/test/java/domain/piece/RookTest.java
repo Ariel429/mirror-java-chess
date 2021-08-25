@@ -52,7 +52,7 @@ class RookTest {
         //when //then
         assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("움직일 수 없는 position입니다.");
+                .hasMessage("이동 경로에 장애물이 있습니다.");
     }
 
     @Test
@@ -75,7 +75,7 @@ class RookTest {
         //when //then
         assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("움직일 수 없는 position입니다.");
+                .hasMessage("이동 경로에 장애물이 있습니다.");
     }
 
     @ParameterizedTest
@@ -84,7 +84,7 @@ class RookTest {
     void movePolicyException(String target) {
         assertThatThrownBy(() -> whiteRook.move(Position.of(target), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("움직일 수 없는 position입니다.");
+                .hasMessage("잘못된 이동 방향입니다.");
     }
 
     @Test
@@ -96,7 +96,7 @@ class RookTest {
         //when //then
         assertThatThrownBy(() -> whiteRook.move(Position.of("a4"), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("움직일 수 없는 position입니다.");
+                .hasMessage("잘못된 이동 방향입니다.");
     }
 
 }

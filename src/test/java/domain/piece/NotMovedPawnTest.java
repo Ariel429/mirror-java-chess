@@ -12,22 +12,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class MovedPawnTest {
+
+public class NotMovedPawnTest {
 
     private PieceState whiteMovedPawn;
     private Map<Position, PieceDto> boardDto;
-    
+
     @BeforeEach
     void setUp() {
-        whiteMovedPawn = MovedPawn.of(Position.of("b3"), Player.WHITE);
+        whiteMovedPawn = NotMovedPawn.of(Position.of("b3"), Player.WHITE);
         boardDto = new HashMap<>();
     }
-    
+
     @Test
-    @DisplayName("진행하려는 타겟 위치에 우리편이 있는 경우 예외 발생")
-    void moveToAlly() {
+    @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
+    void moveToALly() {
         //given
         boardDto.put(Position.of("b4"), new PieceDto(Player.WHITE));
 
@@ -37,27 +38,40 @@ public class MovedPawnTest {
                 .hasMessage("아군의 말 위치로는 이동할 수 없습니다.");
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"b4", "b5"})
     @DisplayName("직선으로 진행할 때 진행 타겟에 적군이 있는 경우 예외 발생")
-    void frontMoveToEnemy() {
+    void frontMoveToEnemy(String target) {
         //given
-        boardDto.put(Position.of("b4"), new PieceDto(Player.BLACK));
-
+        boardDto.put(Position.of(target), new PieceDto(Player.BLACK));
         //when //then
-        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("b4"), boardDto))
+        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of(target), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동 경로에 장애물이 있습니다.");
     }
 
     @Test
+    @DisplayName("직선으로 2칸 진행할 떄 진행 경로에 적군이 있는 경우")
+    void frontMoveObstacle() {
+        //given
+        boardDto.put(Position.of("b5"), new PieceDto(Player.BLACK));
+
+        //when //then
+        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("b5"), boardDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이동 경로에 장애물이 있습니다.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"b4", "b5"})
     @DisplayName("직선 진행 타겟에 아무것도 없는 경우 이동 가능")
-    void moveToEmpty() {
-        assertThat(whiteMovedPawn.move(Position.of("b4"), boardDto))
+    void moveToEmpty(String target) {
+        assertThat(whiteMovedPawn.move(Position.of(target), boardDto))
                 .isInstanceOf(MovedPawn.class);
     }
 
     @Test
-    @DisplayName("대각선으로 진행할 때 진행하려는 타겟 위치에 적군이 있으면 이동 가능")
+    @DisplayName("대각선으로 진행할 떄 진행 타겟에 적군이 있는 경우 이동 가능")
     void diagonalMoveToEnemy() {
         //given
         boardDto.put(Position.of("c4"), new PieceDto(Player.BLACK));
@@ -68,23 +82,25 @@ public class MovedPawnTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"d5", "a4", "c4"})
-    @DisplayName("진행 규칙에 어긋나는 타겟 위치로 이동하려고 하면 예외 발생")
-    void movePolicyException(String input) {
-        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of(input), boardDto))
+    @ValueSource(strings = {"c4", "d5", "a4"})
+    @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
+    void movePolicyException(String target) {
+        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of(target), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }
 
-    @Test
-    @DisplayName("진행하려는 타겟에 적군이 있지만, 진행 규칙에 어긋나는 경우 예외 발생")
-    void moveToEnemyException() {
+    @ParameterizedTest
+    @ValueSource(strings = {"d6", "a5"})
+    @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
+    void moveToEnemyException(String target) {
         //given
-        boardDto.put(Position.of("d4"), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of(target), new PieceDto(Player.BLACK));
 
         //when //then
-        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("d4"), boardDto))
+        assertThatThrownBy(() -> whiteMovedPawn.move(Position.of(target), boardDto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }
+
 }

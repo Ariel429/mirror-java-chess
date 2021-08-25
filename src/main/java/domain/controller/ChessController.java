@@ -55,8 +55,7 @@ public class ChessController {
                 .stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey(),
-                        entry -> entry.getValue().toString()
+                        entry -> entry.getValue().getFigure()
                 ));
     }
-
 }

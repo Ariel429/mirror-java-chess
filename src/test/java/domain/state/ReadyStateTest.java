@@ -1,10 +1,15 @@
 package domain.state;
 
+import domain.MoveParameter;
+import domain.Turn;
 import domain.board.EnumRepositoryBoardInitializer;
+import domain.player.Player;
 import domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +33,7 @@ class ReadyStateTest {
     @Test
     @DisplayName("ReadyState는 move 메서드를 지원하지 않음")
     void move() {
-        assertThatThrownBy(() -> readyState.move(Position.of("a1"), Position.of("a2")))
+        assertThatThrownBy(() -> readyState.move(MoveParameter.of(Arrays.asList("b1", "a3")), Turn.from(Player.WHITE)))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
     
