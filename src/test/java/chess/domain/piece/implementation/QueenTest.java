@@ -1,9 +1,7 @@
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
-import chess.domain.piece.PieceDto;
+import chess.domain.board.BoardSituation;
 import chess.domain.piece.PieceState;
-import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,23 +18,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class QueenTest {
     private PieceState whiteQueen;
-    private Map<Position, PieceDto> boardDto;
-    private BoardState boardState;
-    private PieceDto whitePiece = new PieceDto(PieceType.QUEEN, Team.WHITE);
-    private PieceDto blackPiece = new PieceDto(PieceType.QUEEN, Team.BLACK);
+    private Map<Position, Team> boardDto;
+    private BoardSituation boardSituation;
+    private Team whiteTeam = Team.WHITE;
+    private Team blackTeam = Team.BLACK;
 
     @BeforeEach
     void setUp() {
         whiteQueen = Queen.of(Position.of("C4"), Team.WHITE);
         boardDto = new HashMap<>();
-        boardState = BoardState.of(boardDto);
+        boardSituation = BoardSituation.of(boardDto);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"A2", "A4", "A6", "C6", "E6", "E4", "E2", "C2"})
     @DisplayName("진행 경로에 아무것도 없는 경우 이동 가능")
     void moveToEmpty(String target) {
-        assertThat(whiteQueen.move(Position.of(target), boardState))
+        assertThat(whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(Queen.class);
     }
 
@@ -45,10 +43,10 @@ class QueenTest {
     @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
     void moveToAlly(String target) {
         //given
-        boardDto.put(Position.of(target), whitePiece);
+        boardDto.put(Position.of(target), whiteTeam);
 
         //when //then
-        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,11 +55,11 @@ class QueenTest {
     @DisplayName("진행 경로에 우리편이 있는 경우 예외 발생")
     void allyOnPath(String target, String path) {
         //given
-        boardDto.put(Position.of(path), whitePiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(path), whiteTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -70,11 +68,11 @@ class QueenTest {
     @DisplayName("진행 타겟에 적군이 있는 경우 이동 가능")
     void moveToEnemy(String target) {
         //given
-        boardDto.put(Position.of(target), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(target), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThat(whiteQueen.move(Position.of(target), boardState))
+        assertThat(whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(Queen.class);
     }
 
@@ -83,11 +81,11 @@ class QueenTest {
     @DisplayName("진행 경로에 적군이 있는 경우 예외 발생")
     void enemyOnPath(String target, String path) {
         //given
-        boardDto.put(Position.of(path), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(path), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -95,7 +93,7 @@ class QueenTest {
     @ValueSource(strings = {"A1", "A3", "A5", "B2", "E5"})
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException(String input) {
-        assertThatThrownBy(() -> whiteQueen.move(Position.of(input), boardState))
+        assertThatThrownBy(() -> whiteQueen.move(Position.of(input), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,11 +102,11 @@ class QueenTest {
     @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException(String target) {
         //given
-        boardDto.put(Position.of(target), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(target), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteQueen.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

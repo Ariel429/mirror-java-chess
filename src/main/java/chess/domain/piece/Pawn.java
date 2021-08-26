@@ -1,6 +1,6 @@
 package chess.domain.piece;
 
-import chess.domain.board.BoardState;
+import chess.domain.board.BoardSituation;
 import chess.domain.direction.MovingDirection;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
@@ -32,28 +32,28 @@ public abstract class Pawn extends Piece {
         super(PieceType.PAWN, position, team);
     }
 
-    protected abstract List<Position> movePositions(BoardState boardState);
+    protected abstract List<Position> movePositions(BoardSituation boardSituation);
 
-    public List<Position> getMovablePositions(BoardState boardState) {
-        List<Position> positions = attackPositions(boardState);
-        positions.addAll(movePositions(boardState));
+    public List<Position> getMovablePositions(BoardSituation boardSituation) {
+        List<Position> positions = attackPositions(boardSituation);
+        positions.addAll(movePositions(boardSituation));
         return positions;
     }
 
-    private List<Position> attackPositions(BoardState boardState) {
+    private List<Position> attackPositions(BoardSituation boardSituation) {
         List<Position> attackPositions = new ArrayList<>();
         List<MovingDirection> attackDirections = ATTACK_DIRECTION_BY_TEAM.get(team);
         for (MovingDirection attackDirection : attackDirections) {
-            canAttackBy(attackDirection, boardState, attackPositions);
+            canAttackBy(attackDirection, boardSituation, attackPositions);
         }
         return attackPositions;
     }
 
-    private void canAttackBy(MovingDirection attackDirection, BoardState boardState, List<Position> attackPositions) {
+    private void canAttackBy(MovingDirection attackDirection, BoardSituation boardSituation, List<Position> attackPositions) {
         Position startPosition = position;
         if (startPosition.canMoveBy(attackDirection)) {
             startPosition = startPosition.moveByDirection(attackDirection);
-            if (boardState.canAttack(startPosition, team)) {
+            if (boardSituation.canAttack(startPosition, team)) {
                 attackPositions.add(startPosition);
             }
         }

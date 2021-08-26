@@ -2,7 +2,7 @@ package chess.domain.game;
 
 import chess.domain.MoveParameter;
 import chess.domain.board.Board;
-import chess.domain.board.AutomatedBoardInitializer;
+import chess.domain.board.initializer.AutomatedBoardInitializer;
 import chess.domain.player.Team;
 import chess.domain.state.ReadyState;
 import chess.domain.state.State;

@@ -1,7 +1,7 @@
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
-import chess.domain.piece.PieceDto;
+import chess.controller.dto.PieceDto;
+import chess.domain.board.BoardSituation;
 import chess.domain.piece.PieceState;
 import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
@@ -19,23 +19,23 @@ import static org.assertj.core.api.Assertions.*;
 
 class RookTest {
     private PieceState whiteRook;
-    private Map<Position, PieceDto> boardDto;
-    private BoardState boardState;
-    private PieceDto whitePiece = new PieceDto(PieceType.ROOK, Team.WHITE);
-    private PieceDto blackPiece = new PieceDto(PieceType.ROOK, Team.BLACK);
+    private Map<Position, Team> boardDto;
+    private BoardSituation boardSituation;
+    private Team whiteTeam = Team.WHITE;
+    private Team blackTeam = Team.BLACK;
 
     @BeforeEach
     void setUp() {
         whiteRook = Rook.of(Position.of("b3"), Team.WHITE);
         boardDto = new HashMap<>();
-        boardState = BoardState.of(boardDto);
+        boardSituation = BoardSituation.of(boardDto);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"b8", "b1", "a3", "h3"})
     @DisplayName("진행 경로에 아무것도 없는 경우 이동 가능")
     void moveToEmpty(String target) {
-        assertThat(whiteRook.move(Position.of(target), boardState))
+        assertThat(whiteRook.move(Position.of(target), boardSituation))
                 .isInstanceOf(Rook.class);
     }
     
@@ -43,11 +43,11 @@ class RookTest {
     @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
     void moveToAlly() {
         //given
-        boardDto.put(Position.of("b8"), whitePiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("b8"), whiteTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -55,11 +55,11 @@ class RookTest {
     @DisplayName("진행 경로에 우리편이 있는 경우 예외 발생")
     void allyOnPath() {
         //given
-        boardDto.put(Position.of("b7"), whitePiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("b7"), whiteTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,11 +67,11 @@ class RookTest {
     @DisplayName("진행 타겟에 적군이 있는 경우 이동 가능")
     void moveToEnemy() {
         //given
-        boardDto.put(Position.of("b8"), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("b8"), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThat(whiteRook.move(Position.of("b8"), boardState))
+        assertThat(whiteRook.move(Position.of("b8"), boardSituation))
                 .isInstanceOf(Rook.class);
     }
 
@@ -79,11 +79,11 @@ class RookTest {
     @DisplayName("진행 경로에 적군이 있는 경우 예외 발생")
     void enemyOnPath() {
         //given
-        boardDto.put(Position.of("b6"), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("b6"), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,7 +91,7 @@ class RookTest {
     @ValueSource(strings = {"a4", "c4", "a2", "c2"})
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException(String target) {
-        assertThatThrownBy(() -> whiteRook.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteRook.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -99,11 +99,11 @@ class RookTest {
     @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException() {
         //given
-        boardDto.put(Position.of("a4"), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("a4"), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("a4"), boardState))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("a4"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

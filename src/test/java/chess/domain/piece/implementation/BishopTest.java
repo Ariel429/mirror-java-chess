@@ -1,7 +1,7 @@
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
-import chess.domain.piece.PieceDto;
+import chess.controller.dto.PieceDto;
+import chess.domain.board.BoardSituation;
 import chess.domain.piece.PieceState;
 import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
@@ -21,22 +21,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BishopTest {
     private PieceState whiteBishop;
-    private BoardState boardState;
-    private Map<Position, PieceDto> boardDto;
-    private PieceDto whitePiece = new PieceDto(PieceType.BISHOP, Team.WHITE);
-    private PieceDto blackPiece = new PieceDto(PieceType.BISHOP, Team.BLACK);
+    private BoardSituation boardSituation;
+    private Map<Position, Team> boardDto;
+    private Team whiteTeam = Team.WHITE;
+    private Team blackTeam = Team.BLACK;
 
     @BeforeEach
     void setUp() {
         whiteBishop = Bishop.of(Position.of("c4"), Team.WHITE);
         boardDto = new HashMap<>();
-        boardState = BoardState.of(boardDto);
+        boardSituation = BoardSituation.of(boardDto);
     }
 
     @Test
     @DisplayName("진행 경로에 아무것도 없는 경우 이동 가능")
     void moveToEmpty() {
-        assertThat(whiteBishop.move(Position.of("d5"), boardState))
+        assertThat(whiteBishop.move(Position.of("d5"), boardSituation))
                 .isInstanceOf(Bishop.class);
     }
 
@@ -45,11 +45,11 @@ class BishopTest {
     @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
     void moveToAlly(String target) {
         //given
-        boardDto.put(Position.of(target), whitePiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(target), whiteTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,11 +57,11 @@ class BishopTest {
     @DisplayName("진행 경로에 우리편이 있는 경우 예외 발생")
     void allyOnPath() {
         //given
-        boardDto.put(Position.of("b5"), whitePiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("b5"), whiteTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("a6"), boardState))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("a6"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,11 +69,11 @@ class BishopTest {
     @DisplayName("진행 타겟에 적군이 있는 경우 이동 가능")
     void moveToEnemy() {
         //given
-        boardDto.put(Position.of("d5"), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of("d5"), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThat(whiteBishop.move(Position.of("d5"), boardState))
+        assertThat(whiteBishop.move(Position.of("d5"), boardSituation))
                 .isInstanceOf(Bishop.class);
     }
 
@@ -82,18 +82,18 @@ class BishopTest {
     @DisplayName("진행 경로에 적군이 있는 경우 이동 불가")
     void enemyOnPath(String target, String path) {
         //given
-        boardDto.put(Position.of(path), blackPiece);
-        boardState = BoardState.of(boardDto);
+        boardDto.put(Position.of(path), blackTeam);
+        boardSituation = BoardSituation.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException() {
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("e5"), boardState))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("e5"), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -102,10 +102,10 @@ class BishopTest {
     @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException(String target) {
         //given
-        boardDto.put(Position.of(target), blackPiece);
+        boardDto.put(Position.of(target), blackTeam);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardState))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardSituation))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

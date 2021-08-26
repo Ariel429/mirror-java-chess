@@ -2,7 +2,7 @@ package chess.domain.state;
 
 import chess.domain.MoveParameter;
 import chess.domain.board.Board;
-import chess.domain.board.AutomatedBoardInitializer;
+import chess.domain.board.initializer.AutomatedBoardInitializer;
 import chess.domain.game.Turn;
 import chess.domain.player.Team;
 import org.junit.jupiter.api.BeforeEach;

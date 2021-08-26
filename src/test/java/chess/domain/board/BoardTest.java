@@ -1,5 +1,6 @@
 package chess.domain.board;
 
+import chess.domain.board.initializer.AutomatedBoardInitializer;
 import chess.domain.game.Turn;
 import chess.domain.piece.implementation.Knight;
 import chess.domain.piece.PieceState;
