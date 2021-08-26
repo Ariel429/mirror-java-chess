@@ -1,7 +1,7 @@
 package chess.domain.state;
 
 import chess.domain.MoveParameter;
-import chess.domain.board.EnumRepositoryBoardInitializer;
+import chess.domain.board.AutomatedBoardInitializer;
 import chess.domain.game.Turn;
 import chess.domain.player.Team;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ class ReadyStateTest {
 
     @BeforeEach
     void setUp() {
-        readyState = new ReadyState(new EnumRepositoryBoardInitializer());
+        readyState = new ReadyState(new AutomatedBoardInitializer());
     }
 
     @Test

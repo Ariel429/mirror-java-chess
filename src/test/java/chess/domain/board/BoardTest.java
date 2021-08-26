@@ -18,13 +18,13 @@ class BoardTest {
     @Test
     @DisplayName("board는 boardInitializer 타입의 객체를 받아서 생성")
     void initialize() {
-        Board board = Board.of(new EnumRepositoryBoardInitializer());
+        Board board = Board.of(new AutomatedBoardInitializer());
     }
 
     @Test
     void move() {
         //given
-        Board board = Board.of(new EnumRepositoryBoardInitializer());
+        Board board = Board.of(new AutomatedBoardInitializer());
 
         //when
         board.move(Position.of("b1"), Position.of("c3"), Turn.from(Team.WHITE));

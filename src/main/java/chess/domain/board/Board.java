@@ -34,14 +34,38 @@ public class Board {
         turn.switchTurn();
     }
 
+    public boolean isEnd() {
+        return board.values()
+                .stream()
+                .filter(piece -> piece instanceof King)
+                .count() < RUNNING_KING_COUNT;
+    }
+
+    public double getScores(Team team) {
+        return board.values()
+                .stream()
+                .filter(value -> team.equals(value.getTeam()))
+                .mapToDouble(value -> value.getPoint(getBoardDto()))
+                .sum();
+    }
+
+
     public Map<Position, PieceState> getBoard() {
         return Collections.unmodifiableMap(board);
     }
 
     private void validateSource(PieceState sourcePiece, Turn turn) {
+        validateExists(sourcePiece);
+        validateTurn(sourcePiece, turn);
+    }
+
+    private void validateExists(PieceState sourcePiece) {
         if (Objects.isNull(sourcePiece)) {
             throw new IllegalArgumentException("잘못된 위치를 선택하셨습니다.");
         }
+    }
+
+    private void validateTurn(PieceState sourcePiece, Turn turn) {
         if (!turn.isSameTeam(sourcePiece.getTeam())) {
             throw new IllegalArgumentException("해당 플레이어의 턴이 아닙니다.");
         }
@@ -55,20 +79,5 @@ public class Board {
                         entry -> new PieceDto(entry.getValue().getPieceType(), entry.getValue().getTeam())
                 ));
         return BoardState.of(boardState);
-    }
-
-    public double getScores(Team team) {
-        return board.values()
-                .stream()
-                .filter(value -> team.equals(value.getTeam()))
-                .mapToDouble(value -> value.getPoint(getBoardDto()))
-                .sum();
-    }
-
-    public boolean isEnd() {
-        return board.values()
-                .stream()
-                .filter(piece -> piece instanceof King)
-                .count() < RUNNING_KING_COUNT;
     }
 }
