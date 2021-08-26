@@ -4,7 +4,7 @@ import chess.domain.board.Board;
 import chess.domain.board.EnumRepositoryBoardInitializer;
 import chess.domain.piece.Pawn;
 import chess.domain.piece.PieceState;
-import chess.domain.player.Player;
+import chess.domain.player.Team;
 import chess.domain.position.File;
 import chess.domain.state.ReadyState;
 import chess.domain.state.State;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class ChessGame {
 
     private State state;
-    private Turn turn = Turn.from(Player.WHITE);
+    private Turn turn = Turn.from(Team.WHITE);
 
     public ChessGame() {
         this.state = new ReadyState(new EnumRepositoryBoardInitializer());
@@ -42,37 +42,27 @@ public class ChessGame {
         return state.isEnd();
     }
 
-    public Map<Player, Double> getStatus() {
-        Map<Player, Double> status = new HashMap<>();
+    public Map<Team, Double> getStatus() {
+        Map<Team, Double> status = new HashMap<>();
         double blackSum = 0;
         double whiteSum = 0;
 
         for (File file : File.values()) {
-            blackSum += getPawnPoints(file, Player.BLACK);
-            whiteSum += getPawnPoints(file, Player.WHITE);
+            blackSum += getPawnPoints(file, Team.BLACK);
+            whiteSum += getPawnPoints(file, Team.WHITE);
         }
 
-        blackSum += state.getRemainPiece(Player.BLACK)
-                .values()
-                .stream()
-                .filter(piece -> !(piece instanceof Pawn))
-                .mapToDouble(PieceState::getPoint)
-                .sum();
-        whiteSum += state.getRemainPiece(Player.WHITE)
-                .values()
-                .stream()
-                .filter(piece -> !(piece instanceof Pawn))
-                .mapToDouble(PieceState::getPoint)
-                .sum();
+        blackSum += getPointsExceptForPawns(Team.BLACK);
+        whiteSum += getPointsExceptForPawns(Team.WHITE);
 
-        status.put(Player.BLACK, blackSum);
-        status.put(Player.WHITE, whiteSum);
+        status.put(Team.BLACK, blackSum);
+        status.put(Team.WHITE, whiteSum);
         return Collections.unmodifiableMap(status);
     }
 
 
-    private double getPawnPoints(File file, Player player) {
-        double pawnSum = state.getRemainPiece(player)
+    private double getPawnPoints(File file, Team team) {
+        double pawnSum = state.getRemainPiece(team)
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() instanceof Pawn)
@@ -84,6 +74,15 @@ public class ChessGame {
             return pawnSum / 2d;
         }
         return pawnSum;
+    }
+
+    private double getPointsExceptForPawns(Team team) {
+        return state.getRemainPiece(team)
+                .values()
+                .stream()
+                .filter(piece -> !(piece instanceof Pawn))
+                .mapToDouble(PieceState::getPoint)
+                .sum();
     }
 
 }

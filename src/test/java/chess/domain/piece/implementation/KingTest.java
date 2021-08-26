@@ -1,10 +1,9 @@
-package chess.domain.piece;
+package chess.domain.piece.implementation;
 
-import chess.domain.BoardState;
-import chess.domain.piece.King;
+import chess.domain.board.BoardState;
 import chess.domain.piece.PieceDto;
 import chess.domain.piece.PieceState;
-import chess.domain.player.Player;
+import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +23,7 @@ class KingTest {
 
     @BeforeEach
     void setUp() {
-        whiteKing = King.of(Position.of("C4"), Player.WHITE);
+        whiteKing = King.of(Position.of("C4"), Team.WHITE);
         boardDto = new HashMap<>();
         boardState = BoardState.of(boardDto);
     }
@@ -42,13 +41,12 @@ class KingTest {
     @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
     void moveToAlly(String target) {
         //given
-        boardDto.put(Position.of(target), new PieceDto(Player.WHITE));
+        boardDto.put(Position.of(target), new PieceDto(Team.WHITE));
         boardState = BoardState.of(boardDto);
 
         //when //then
         assertThatThrownBy(() -> whiteKing.move(Position.of(target), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("아군의 말 위치로는 이동할 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -56,7 +54,7 @@ class KingTest {
     @DisplayName("진행 타겟에 적군이 있는 경우 이동 가능")
     void moveToEnemy(String target) {
         //given
-        boardDto.put(Position.of(target), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of(target), new PieceDto(Team.BLACK));
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -69,8 +67,7 @@ class KingTest {
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException(String input) {
         assertThatThrownBy(() -> whiteKing.move(Position.of(input), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("잘못된 이동 방향입니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -78,12 +75,11 @@ class KingTest {
     @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException(String target) {
         //given
-        boardDto.put(Position.of(target), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of(target), new PieceDto(Team.BLACK));
         boardState = BoardState.of(boardDto);
 
         //when //then
         assertThatThrownBy(() -> whiteKing.move(Position.of(target), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("잘못된 이동 방향입니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

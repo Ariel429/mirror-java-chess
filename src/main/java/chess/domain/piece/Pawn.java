@@ -1,68 +1,62 @@
 package chess.domain.piece;
 
-import chess.domain.BoardState;
-import chess.domain.MovingDirection;
-import chess.exception.MovingDirectionException;
-import chess.domain.player.Player;
+import chess.domain.board.BoardState;
+import chess.domain.direction.MovingDirection;
+import chess.domain.player.Team;
 import chess.domain.position.Position;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Pawn extends Piece {
 
-    protected static final Map<Player, MovingDirection> MOVING_DIRECTION_BY_PLAYER;
-    protected static final Map<Player, List<MovingDirection>> ATTACK_DIRECTION_BY_PLAYER;
-
-    private static final String BLACK_PAWN_UNICODE = "\u265F";
-    private static final String WHITE_PAWN_UNICODE = "\u2659";
+    protected static final Map<Team, MovingDirection> MOVING_DIRECTION_BY_TEAM;
+    protected static final Map<Team, List<MovingDirection>> ATTACK_DIRECTION_BY_TEAM;
 
     static {
-        MOVING_DIRECTION_BY_PLAYER = new HashMap<>();
-        MOVING_DIRECTION_BY_PLAYER.put(Player.WHITE, MovingDirection.NORTH);
-        MOVING_DIRECTION_BY_PLAYER.put(Player.BLACK, MovingDirection.SOUTH);
+        MOVING_DIRECTION_BY_TEAM = new HashMap<>();
+        MOVING_DIRECTION_BY_TEAM.put(Team.WHITE, MovingDirection.NORTH);
+        MOVING_DIRECTION_BY_TEAM.put(Team.BLACK, MovingDirection.SOUTH);
 
-        ATTACK_DIRECTION_BY_PLAYER = new HashMap<>();
-        ATTACK_DIRECTION_BY_PLAYER.put(Player.WHITE, Arrays.asList(
+        ATTACK_DIRECTION_BY_TEAM = new HashMap<>();
+        ATTACK_DIRECTION_BY_TEAM.put(Team.WHITE, Arrays.asList(
                 MovingDirection.NORTH_EAST,
                 MovingDirection.NORTH_WEST
         ));
-        ATTACK_DIRECTION_BY_PLAYER.put(Player.BLACK, Arrays.asList(
+        ATTACK_DIRECTION_BY_TEAM.put(Team.BLACK, Arrays.asList(
                 MovingDirection.SOUTH_EAST,
                 MovingDirection.SOUTH_WEST
         ));
     }
 
-    protected Pawn(Position position, Player player) {
-        super(PieceType.PAWN, position, player);
+    protected Pawn(Position position, Team team) {
+        super(PieceType.PAWN, position, team);
     }
 
-    @Override
-    protected void validateMovingPolicy(Position target, BoardState boardState) {
-        MovingDirection movingDirection = MovingDirection.getDirection(position, target);
-        validateDirection(movingDirection);
-        validateAttack(target, boardState);
-        validateMove(target, boardState);
+    protected abstract List<Position> movePositions(BoardState boardState);
+
+    public List<Position> getMovablePositions(BoardState boardState) {
+        List<Position> positions = attackPositions(boardState);
+        positions.addAll(movePositions(boardState));
+        return positions;
     }
 
-    private void validateDirection(MovingDirection movingDirection) {
-        if (!ATTACK_DIRECTION_BY_PLAYER.get(player).contains(movingDirection) &&
-                !MOVING_DIRECTION_BY_PLAYER.get(player).equals(movingDirection)) {
-            throw new MovingDirectionException();
+    private List<Position> attackPositions(BoardState boardState) {
+        List<Position> attackPositions = new ArrayList<>();
+        List<MovingDirection> attackDirections = ATTACK_DIRECTION_BY_TEAM.get(team);
+        for (MovingDirection attackDirection : attackDirections) {
+            canAttackBy(attackDirection, boardState, attackPositions);
+        }
+        return attackPositions;
+    }
+
+    private void canAttackBy(MovingDirection attackDirection, BoardState boardState, List<Position> attackPositions) {
+        Position startPosition = position;
+        if (startPosition.canMove(attackDirection)) {
+            startPosition = startPosition.moveByDirection(attackDirection);
+            if (boardState.canAttack(startPosition, team)) {
+                attackPositions.add(startPosition);
+            }
         }
     }
 
-    protected abstract void validateAttack(Position target, BoardState boardState);
-
-    protected abstract void validateMove(Position target, BoardState boardState);
-
-    @Override
-    public String getFigure() {
-        if (player == Player.BLACK) {
-            return BLACK_PAWN_UNICODE;
-        }
-        return WHITE_PAWN_UNICODE;
-    }
 }

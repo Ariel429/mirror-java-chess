@@ -5,7 +5,7 @@ import chess.domain.MoveParameter;
 import chess.domain.board.Board;
 import chess.controller.dto.RequestDto;
 import chess.controller.dto.ResponseDto;
-import chess.domain.player.Player;
+import chess.domain.player.Team;
 import chess.domain.position.Position;
 import chess.view.InputView;
 import chess.view.OutputView;
@@ -39,7 +39,7 @@ public class ChessController {
                     case MOVE:
                         chessGame.move(MoveParameter.of(requestDto.getParameter()));
                     case STATUS:
-                        Map<Player, Double> status = chessGame.getStatus();
+                        Map<Team, Double> status = chessGame.getStatus();
                         outputView.printStatus(status);
                         break;
                     case UNKNOWN:

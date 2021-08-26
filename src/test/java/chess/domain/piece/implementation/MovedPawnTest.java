@@ -1,10 +1,9 @@
-package chess.domain.piece;
+package chess.domain.piece.implementation;
 
-import chess.domain.BoardState;
-import chess.domain.piece.MovedPawn;
+import chess.domain.board.BoardState;
 import chess.domain.piece.PieceDto;
 import chess.domain.piece.PieceState;
-import chess.domain.player.Player;
+import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +25,7 @@ public class MovedPawnTest {
     
     @BeforeEach
     void setUp() {
-        whiteMovedPawn = MovedPawn.of(Position.of("b3"), Player.WHITE);
+        whiteMovedPawn = MovedPawn.of(Position.of("b3"), Team.WHITE);
         boardDto = new HashMap<>();
         boardState = BoardState.of(boardDto);
     }
@@ -35,26 +34,24 @@ public class MovedPawnTest {
     @DisplayName("Pawn은 바로 앞에 기물이 있는 경우 전진할 수 없음")
     void moveToAlly() {
         //given
-        boardDto.put(Position.of("b4"), new PieceDto(Player.WHITE));
+        boardDto.put(Position.of("b4"), new PieceDto(Team.WHITE));
         boardState = BoardState.of(boardDto);
 
         //when //then
         assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("b4"), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("아군의 말 위치로는 이동할 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("직선으로 진행할 때 진행 타겟에 적군이 있는 경우 예외 발생")
     void frontMoveToEnemy() {
         //given
-        boardDto.put(Position.of("b4"), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of("b4"), new PieceDto(Team.BLACK));
         boardState = BoardState.of(boardDto);
 
         //when //then
         assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("b4"), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이동 경로에 장애물이 있습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -68,7 +65,7 @@ public class MovedPawnTest {
     @DisplayName("대각선으로 진행할 때 진행하려는 타겟 위치에 적군이 있으면 이동 가능")
     void diagonalMoveToEnemy() {
         //given
-        boardDto.put(Position.of("c4"), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of("c4"), new PieceDto(Team.BLACK));
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -81,20 +78,18 @@ public class MovedPawnTest {
     @DisplayName("진행 규칙에 어긋나는 타겟 위치로 이동하려고 하면 예외 발생")
     void movePolicyException(String input) {
         assertThatThrownBy(() -> whiteMovedPawn.move(Position.of(input), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("잘못된 이동 방향입니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("진행하려는 타겟에 적군이 있지만, 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException() {
         //given
-        boardDto.put(Position.of("d4"), new PieceDto(Player.BLACK));
+        boardDto.put(Position.of("d4"), new PieceDto(Team.BLACK));
         boardState = BoardState.of(boardDto);
 
         //when //then
         assertThatThrownBy(() -> whiteMovedPawn.move(Position.of("d4"), boardState))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("잘못된 이동 방향입니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

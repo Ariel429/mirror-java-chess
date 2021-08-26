@@ -1,11 +1,9 @@
 package chess.domain.board;
 
 import chess.domain.Turn;
-import chess.domain.board.Board;
-import chess.domain.board.EnumRepositoryBoardInitializer;
-import chess.domain.piece.Knight;
+import chess.domain.piece.implementation.Knight;
 import chess.domain.piece.PieceState;
-import chess.domain.player.Player;
+import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +27,7 @@ class BoardTest {
         Board board = Board.of(new EnumRepositoryBoardInitializer());
 
         //when
-        board.move(Position.of("b1"), Position.of("c3"), Turn.from(Player.WHITE));
+        board.move(Position.of("b1"), Position.of("c3"), Turn.from(Team.WHITE));
         Map<Position, PieceState> piecePosition = board.getBoard();
 
         //then
