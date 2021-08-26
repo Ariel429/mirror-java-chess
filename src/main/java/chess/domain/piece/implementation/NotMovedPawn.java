@@ -44,5 +44,13 @@ public class NotMovedPawn extends Pawn {
     protected PieceState movedPieceState(Position target) {
         return MovedPawn.of(target, team);
     }
+
+    @Override
+    public double getPoint(BoardState boardState) {
+        if (boardState.existSamePieceInSameFile(position, pieceType, team)) {
+            return pieceType.getPoint() / 2;
+        }
+        return pieceType.getPoint();
+    }
 }
 

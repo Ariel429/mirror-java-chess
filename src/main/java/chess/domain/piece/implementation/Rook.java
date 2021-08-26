@@ -1,14 +1,10 @@
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
 import chess.domain.direction.MovingDirection;
 import chess.domain.piece.MoveByDirectionPiece;
-import chess.domain.piece.Piece;
 import chess.domain.piece.PieceState;
 import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
-import chess.exception.MovingDirectionException;
-import chess.exception.ObstacleOnPathException;
 import chess.domain.position.Position;
 
 import java.util.Arrays;

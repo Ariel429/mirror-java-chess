@@ -1,10 +1,7 @@
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
 import chess.domain.direction.MovingDirection;
 import chess.domain.piece.*;
-import chess.exception.MovingDirectionException;
-import chess.exception.ObstacleOnPathException;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
 

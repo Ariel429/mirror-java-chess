@@ -38,5 +38,13 @@ public class MovedPawn extends Pawn {
     protected PieceState movedPieceState(Position target) {
         return new MovedPawn(target, team);
     }
+
+    @Override
+    public double getPoint(BoardState boardState) {
+        if (boardState.existSamePieceInSameFile(position, pieceType, team)) {
+            return pieceType.getPoint() / 2;
+        }
+        return pieceType.getPoint();
+    }
 }
 

@@ -3,6 +3,7 @@ package chess.domain.piece.implementation;
 import chess.domain.board.BoardState;
 import chess.domain.piece.PieceDto;
 import chess.domain.piece.PieceState;
+import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,8 @@ class RookTest {
     private PieceState whiteRook;
     private Map<Position, PieceDto> boardDto;
     private BoardState boardState;
+    private PieceDto whitePiece = new PieceDto(PieceType.ROOK, Team.WHITE);
+    private PieceDto blackPiece = new PieceDto(PieceType.ROOK, Team.BLACK);
 
     @BeforeEach
     void setUp() {
@@ -40,7 +43,7 @@ class RookTest {
     @DisplayName("진행 타겟에 우리편이 있는 경우 예외 발생")
     void moveToAlly() {
         //given
-        boardDto.put(Position.of("b8"), new PieceDto(Team.WHITE));
+        boardDto.put(Position.of("b8"), whitePiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -52,7 +55,7 @@ class RookTest {
     @DisplayName("진행 경로에 우리편이 있는 경우 예외 발생")
     void allyOnPath() {
         //given
-        boardDto.put(Position.of("b7"), new PieceDto(Team.WHITE));
+        boardDto.put(Position.of("b7"), whitePiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -64,7 +67,7 @@ class RookTest {
     @DisplayName("진행 타겟에 적군이 있는 경우 이동 가능")
     void moveToEnemy() {
         //given
-        boardDto.put(Position.of("b8"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("b8"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -76,7 +79,7 @@ class RookTest {
     @DisplayName("진행 경로에 적군이 있는 경우 예외 발생")
     void enemyOnPath() {
         //given
-        boardDto.put(Position.of("b6"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("b6"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -96,7 +99,7 @@ class RookTest {
     @DisplayName("진행 타겟에 적군이 있지만 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException() {
         //given
-        boardDto.put(Position.of("a4"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("a4"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then

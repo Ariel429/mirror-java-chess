@@ -1,20 +1,18 @@
 
 package chess.domain.piece.implementation;
 
-import chess.domain.board.BoardState;
 import chess.domain.direction.MovingDirection;
 import chess.domain.piece.MoveByDirectionPiece;
-import chess.domain.piece.Piece;
+import chess.domain.piece.MoveByDistancePiece;
 import chess.domain.piece.PieceState;
 import chess.domain.piece.PieceType;
-import chess.exception.MovingDirectionException;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class King extends MoveByDirectionPiece {
+public class King extends MoveByDistancePiece {
 
     private static final List<MovingDirection> MOVING_DIRECTIONS;
 

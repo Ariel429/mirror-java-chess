@@ -12,9 +12,11 @@ public interface PieceState {
 
     List<Position> getMovablePositions(BoardState boardState);
 
+    PieceType getPieceType();
+
     Team getTeam();
 
     String getFigure();
 
-    double getPoint();
+    double getPoint(BoardState boardState);
 }

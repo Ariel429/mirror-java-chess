@@ -3,6 +3,7 @@ package chess.domain.piece;
 import chess.domain.board.BoardState;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
+import chess.exception.MovingException;
 
 import java.util.List;
 
@@ -22,13 +23,14 @@ public abstract class Piece implements PieceState {
     public PieceState move(Position target, BoardState boardState) {
         List<Position> positions = getMovablePositions(boardState);
         if (!positions.contains(target)) {
-            throw new IllegalArgumentException("이동할 수 없는 position입니다.");
+            throw new MovingException();
         }
         return movedPieceState(target);
     }
 
     protected abstract PieceState movedPieceState(Position target);
 
+    @Override
     public PieceType getPieceType() {
         return pieceType;
     }
@@ -44,7 +46,7 @@ public abstract class Piece implements PieceState {
     }
 
     @Override
-    public double getPoint() {
+    public double getPoint(BoardState boardState) {
         return pieceType.getPoint();
     }
 }

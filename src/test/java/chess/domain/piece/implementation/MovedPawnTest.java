@@ -3,6 +3,7 @@ package chess.domain.piece.implementation;
 import chess.domain.board.BoardState;
 import chess.domain.piece.PieceDto;
 import chess.domain.piece.PieceState;
+import chess.domain.piece.PieceType;
 import chess.domain.player.Team;
 import chess.domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,8 @@ public class MovedPawnTest {
     private PieceState whiteMovedPawn;
     private Map<Position, PieceDto> boardDto;
     private BoardState boardState;
+    private PieceDto whitePiece = new PieceDto(PieceType.PAWN, Team.WHITE);
+    private PieceDto blackPiece = new PieceDto(PieceType.PAWN, Team.BLACK);
     
     @BeforeEach
     void setUp() {
@@ -34,7 +37,7 @@ public class MovedPawnTest {
     @DisplayName("Pawn은 바로 앞에 기물이 있는 경우 전진할 수 없음")
     void moveToAlly() {
         //given
-        boardDto.put(Position.of("b4"), new PieceDto(Team.WHITE));
+        boardDto.put(Position.of("b4"), whitePiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -46,7 +49,7 @@ public class MovedPawnTest {
     @DisplayName("직선으로 진행할 때 진행 타겟에 적군이 있는 경우 예외 발생")
     void frontMoveToEnemy() {
         //given
-        boardDto.put(Position.of("b4"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("b4"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -65,7 +68,7 @@ public class MovedPawnTest {
     @DisplayName("대각선으로 진행할 때 진행하려는 타겟 위치에 적군이 있으면 이동 가능")
     void diagonalMoveToEnemy() {
         //given
-        boardDto.put(Position.of("c4"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("c4"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
@@ -85,7 +88,7 @@ public class MovedPawnTest {
     @DisplayName("진행하려는 타겟에 적군이 있지만, 진행 규칙에 어긋나는 경우 예외 발생")
     void moveToEnemyException() {
         //given
-        boardDto.put(Position.of("d4"), new PieceDto(Team.BLACK));
+        boardDto.put(Position.of("d4"), blackPiece);
         boardState = BoardState.of(boardDto);
 
         //when //then
