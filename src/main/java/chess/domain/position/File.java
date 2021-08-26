@@ -24,10 +24,6 @@ public enum File {
     }
 
     public File add(int file) {
-        int newFile = value + file;
-        return Arrays.stream(values())
-                .filter(files -> files.value == newFile)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("움직일 수 없는 position입니다."));
+        return values()[ordinal() + file];
     }
 }

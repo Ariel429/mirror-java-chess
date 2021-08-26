@@ -25,7 +25,7 @@ public abstract class MoveByDistancePiece extends Piece{
 
     private void addPositionBy(BoardState boardState, List<Position> positions, MovingDirection movingDirection) {
         Position targetPosition = position;
-        if (targetPosition.canMove(movingDirection)) {
+        if (targetPosition.canMoveBy(movingDirection)) {
             targetPosition = targetPosition.moveByDirection(movingDirection);
             if (boardState.canMove(targetPosition) || boardState.canAttack(targetPosition, team)) {
                 positions.add(targetPosition);
