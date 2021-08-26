@@ -1,13 +1,11 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.MovingDirection;
 import domain.exception.MovingDirectionException;
 import domain.exception.MovingDistanceException;
 import domain.player.Player;
 import domain.position.Position;
-
-import java.util.Map;
-import java.util.Objects;
 
 public abstract class AttackablePawn extends Pawn {
 
@@ -16,12 +14,11 @@ public abstract class AttackablePawn extends Pawn {
     }
 
     @Override
-    protected void validateAttack(Position target, Map<Position, PieceDto> boardDto) {
+    protected void validateAttack(Position target, BoardState boardState) {
         MovingDirection direction = MovingDirection.getDirection(position, target);
 
-        PieceDto pieceDto = boardDto.get(target);
         if (ATTACK_DIRECTION_BY_PLAYER.get(player).contains(direction)) {
-            if (Objects.isNull(pieceDto)) {
+            if (boardState.isEmpty(target)) {
                 throw new MovingDirectionException();
             }
             if (position.getRankDifference(target) != direction.getRankDirection()) {

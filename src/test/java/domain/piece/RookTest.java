@@ -1,5 +1,6 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.player.Player;
 import domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,18 +17,20 @@ import static org.assertj.core.api.Assertions.*;
 class RookTest {
     private PieceState whiteRook;
     private Map<Position, PieceDto> boardDto;
+    private BoardState boardState;
 
     @BeforeEach
     void setUp() {
         whiteRook = Rook.of(Position.of("b3"), Player.WHITE);
         boardDto = new HashMap<>();
+        boardState = BoardState.of(boardDto);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"b8", "b1", "a3", "h3"})
     @DisplayName("진행 경로에 아무것도 없는 경우 이동 가능")
     void moveToEmpty(String target) {
-        assertThat(whiteRook.move(Position.of(target), boardDto))
+        assertThat(whiteRook.move(Position.of(target), boardState))
                 .isInstanceOf(Rook.class);
     }
     
@@ -36,9 +39,10 @@ class RookTest {
     void moveToAlly() {
         //given
         boardDto.put(Position.of("b8"), new PieceDto(Player.WHITE));
-        
+        boardState = BoardState.of(boardDto);
+
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardDto))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("아군의 말 위치로는 이동할 수 없습니다.");
     }
@@ -48,9 +52,10 @@ class RookTest {
     void allyOnPath() {
         //given
         boardDto.put(Position.of("b7"), new PieceDto(Player.WHITE));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardDto))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동 경로에 장애물이 있습니다.");
     }
@@ -60,9 +65,10 @@ class RookTest {
     void moveToEnemy() {
         //given
         boardDto.put(Position.of("b8"), new PieceDto(Player.BLACK));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThat(whiteRook.move(Position.of("b8"), boardDto))
+        assertThat(whiteRook.move(Position.of("b8"), boardState))
                 .isInstanceOf(Rook.class);
     }
 
@@ -71,9 +77,10 @@ class RookTest {
     void enemyOnPath() {
         //given
         boardDto.put(Position.of("b6"), new PieceDto(Player.BLACK));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardDto))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("b8"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동 경로에 장애물이 있습니다.");
     }
@@ -82,7 +89,7 @@ class RookTest {
     @ValueSource(strings = {"a4", "c4", "a2", "c2"})
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException(String target) {
-        assertThatThrownBy(() -> whiteRook.move(Position.of(target), boardDto))
+        assertThatThrownBy(() -> whiteRook.move(Position.of(target), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }
@@ -92,11 +99,11 @@ class RookTest {
     void moveToEnemyException() {
         //given
         boardDto.put(Position.of("a4"), new PieceDto(Player.BLACK));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteRook.move(Position.of("a4"), boardDto))
+        assertThatThrownBy(() -> whiteRook.move(Position.of("a4"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }
-
 }

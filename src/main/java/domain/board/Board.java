@@ -1,5 +1,6 @@
 package domain.board;
 
+import domain.BoardState;
 import domain.Turn;
 import domain.piece.King;
 import domain.piece.Piece;
@@ -47,13 +48,14 @@ public class Board {
         }
     }
 
-    private Map<Position, PieceDto> getBoardDto() {
-        return board.entrySet()
+    private BoardState getBoardDto() {
+        Map<Position, PieceDto> boardState = board.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey(),
                         entry -> new PieceDto(entry.getValue().getPlayer())
                 ));
+        return BoardState.of(boardState);
     }
 
     public Map<Position, PieceState> getRemainPieces(Player player) {

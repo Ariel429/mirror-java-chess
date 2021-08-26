@@ -1,12 +1,12 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.player.Player;
 import domain.position.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
@@ -17,18 +17,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BishopTest {
     private PieceState whiteBishop;
+    private BoardState boardState;
     private Map<Position, PieceDto> boardDto;
 
     @BeforeEach
     void setUp() {
         whiteBishop = Bishop.of(Position.of("c4"), Player.WHITE);
         boardDto = new HashMap<>();
+        boardState = BoardState.of(boardDto);
     }
 
     @Test
     @DisplayName("진행 경로에 아무것도 없는 경우 이동 가능")
     void moveToEmpty() {
-        assertThat(whiteBishop.move(Position.of("d5"), boardDto))
+        assertThat(whiteBishop.move(Position.of("d5"), boardState))
                 .isInstanceOf(Bishop.class);
     }
 
@@ -38,9 +40,10 @@ class BishopTest {
     void moveToAlly(String target) {
         //given
         boardDto.put(Position.of(target), new PieceDto(Player.WHITE));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardDto))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of(target), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("아군의 말 위치로는 이동할 수 없습니다.");
     }
@@ -50,9 +53,10 @@ class BishopTest {
     void allyOnPath() {
         //given
         boardDto.put(Position.of("b5"), new PieceDto(Player.WHITE));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("a6"), boardDto))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("a6"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동 경로에 장애물이 있습니다.");
     }
@@ -62,9 +66,10 @@ class BishopTest {
     void moveToEnemy() {
         //given
         boardDto.put(Position.of("d5"), new PieceDto(Player.BLACK));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThat(whiteBishop.move(Position.of("d5"), boardDto))
+        assertThat(whiteBishop.move(Position.of("d5"), boardState))
                 .isInstanceOf(Bishop.class);
     }
     
@@ -73,17 +78,18 @@ class BishopTest {
     void enemyOnPath() {
         //given
         boardDto.put(Position.of("b3"), new PieceDto(Player.BLACK));
-                
+        boardState = BoardState.of(boardDto);
+
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("a2"), boardDto))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("a2"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이동 경로에 장애물이 있습니다.");
     }
-    
+
     @Test
     @DisplayName("진행 규칙에 어긋나는 경우 예외 발생")
     void movePolicyException() {
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("e5"), boardDto))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("e5"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }
@@ -93,9 +99,10 @@ class BishopTest {
     void moveToEnemyException() {
         //given
         boardDto.put(Position.of("c5"), new PieceDto(Player.BLACK));
+        boardState = BoardState.of(boardDto);
 
         //when //then
-        assertThatThrownBy(() -> whiteBishop.move(Position.of("c5"), boardDto))
+        assertThatThrownBy(() -> whiteBishop.move(Position.of("c5"), boardState))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("잘못된 이동 방향입니다.");
     }

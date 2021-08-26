@@ -1,6 +1,7 @@
 
 package domain.piece;
 
+import domain.BoardState;
 import domain.MovingDirection;
 import domain.exception.MovingDirectionException;
 import domain.exception.MovingDistanceException;
@@ -39,7 +40,7 @@ public class King extends UnchangeablePiece {
     }
 
     @Override
-    protected void validateMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+    protected void validateMovingPolicy(Position target, BoardState boardState) {
         MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
         if (!MOVING_DIRECTIONS.contains(movingDirection)) {

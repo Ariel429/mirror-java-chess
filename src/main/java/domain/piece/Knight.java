@@ -1,6 +1,8 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.MovingDirection;
+import domain.board.Board;
 import domain.exception.MovingDistanceException;
 import domain.player.Player;
 import domain.position.Position;
@@ -37,7 +39,7 @@ public class Knight extends UnchangeablePiece {
     }
 
     @Override
-    protected void validateMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+    protected void validateMovingPolicy(Position target, BoardState boardState) {
         MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
         if (!MOVING_DIRECTIONS.contains(movingDirection)) {

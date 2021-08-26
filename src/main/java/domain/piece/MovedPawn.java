@@ -1,13 +1,11 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.MovingDirection;
 import domain.exception.MovingDistanceException;
 import domain.exception.ObstacleOnPathException;
 import domain.player.Player;
 import domain.position.Position;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class MovedPawn extends AttackablePawn {
 
@@ -20,15 +18,14 @@ public class MovedPawn extends AttackablePawn {
     }
 
     @Override
-    protected void validateMove(Position target, Map<Position, PieceDto> boardDto) {
+    protected void validateMove(Position target, BoardState boardState) {
         MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
         if (MOVING_DIRECTION_BY_PLAYER.get(player).equals(movingDirection)) {
             if (position.getRankDifference(target) != movingDirection.getRankDirection()) {
                 throw new MovingDistanceException();
             }
-            PieceDto piece = boardDto.get(target);
-            if (!Objects.isNull(piece)) {
+            if (boardState.isNotEmpty(target)) {
                 throw new ObstacleOnPathException();
             }
         }

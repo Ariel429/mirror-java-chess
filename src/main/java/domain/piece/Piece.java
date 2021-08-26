@@ -1,5 +1,6 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.player.Player;
 import domain.position.Position;
 
@@ -19,25 +20,24 @@ public abstract class Piece implements PieceState {
     }
 
     @Override
-    public PieceState move(Position target, Map<Position, PieceDto> boardDto) {
-        validateMove(target, boardDto);
+    public PieceState move(Position target, BoardState boardState) {
+        validateMove(target, boardState);
         this.position = target;
         return makePieceState();
     }
 
-    private void validateMove(Position target, Map<Position, PieceDto> boardDto) {
-        validateAlly(target, boardDto);
-        validateMovingPolicy(target, boardDto);
+    private void validateMove(Position target, BoardState boardState) {
+        validateAlly(target, boardState);
+        validateMovingPolicy(target, boardState);
     }
 
-    private void validateAlly(Position target, Map<Position, PieceDto> boardDto) {
-        PieceDto pieceDto = boardDto.get(target);
-        if (!Objects.isNull(pieceDto) && pieceDto.getPlayer() == player) {
+    private void validateAlly(Position target, BoardState boardState) {
+        if (boardState.isSameTeam(target, player)) {
             throw new IllegalArgumentException("아군의 말 위치로는 이동할 수 없습니다.");
         }
     }
 
-    protected abstract void validateMovingPolicy(Position target, Map<Position, PieceDto> boardDto);
+    protected abstract void validateMovingPolicy(Position target, BoardState boardState);
 
     protected abstract PieceState makePieceState();
 

@@ -1,5 +1,6 @@
 package domain.piece;
 
+import domain.BoardState;
 import domain.MovingDirection;
 import domain.exception.MovingDirectionException;
 import domain.exception.ObstacleOnPathException;
@@ -38,7 +39,7 @@ public class Queen extends UnchangeablePiece {
     }
 
     @Override
-    protected void validateMovingPolicy(Position target, Map<Position, PieceDto> boardDto) {
+    protected void validateMovingPolicy(Position target, BoardState boardState) {
         MovingDirection movingDirection = MovingDirection.getDirection(position, target);
 
         if (!MOVING_DIRECTIONS.contains(movingDirection)) {
@@ -47,7 +48,7 @@ public class Queen extends UnchangeablePiece {
 
         Position startPathPosition = position.moveByDirection(movingDirection);
         while (!startPathPosition.equals(target)) {
-            if (!Objects.isNull(boardDto.get(startPathPosition))) {
+            if (boardState.isNotEmpty(startPathPosition)) {
                 throw new ObstacleOnPathException();
             }
             startPathPosition = startPathPosition.moveByDirection(movingDirection);

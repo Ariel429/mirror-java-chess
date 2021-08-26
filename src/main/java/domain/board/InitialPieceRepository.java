@@ -1,6 +1,12 @@
 package domain.board;
 
-import domain.piece.*;
+import domain.piece.Bishop;
+import domain.piece.King;
+import domain.piece.Knight;
+import domain.piece.NotMovedPawn;
+import domain.piece.Piece;
+import domain.piece.Queen;
+import domain.piece.Rook;
 import domain.player.Player;
 import domain.position.Position;
 
